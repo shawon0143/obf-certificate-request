@@ -1,0 +1,44 @@
+#!/usr/bin/ruby
+
+require 'json'
+require "base64"
+
+
+id = File.read('config/id').strip
+
+# (Hack) Get our API Key
+# Go to https://openbadgefactory.com/c/client/my/edit2/apikey, generate a key by klicking the button and look at the GET request that fires.
+# Save its '_' parameter in the counter file and the session part of the 'Cookie' header in the session file
+counter = File.read('config/counter').to_i
+File.write('config/counter', counter + 1)
+curl = "curl -s -H \"Cookie: #{File.read('config/session').gsub!("\n", '')}\", \"https://openbadgefactory.com/c/client/#{id}/generate_csrtoken?_=#{counter}\" > tmp/api_key"
+`#{curl}`
+
+# Get OBF Public Key
+
+# Decrypt our API Key with their public key
+`wget -qO tmp/obf_public_key https://openbadgefactory.com/v1/client/OBF.rsa.pub`
+decryptedAPIKey = JSON.parse(`./decrypt-api-key`)
+puts decryptedAPIKey
+subject = decryptedAPIKey["subject"]
+id = decryptedAPIKey["id"]
+time = Time.at(decryptedAPIKey["ctime"])
+
+# Test if our API Key is too older (older than 10 miutes)
+# This should not happen when atomatically retrieving our API key with the hack above
+if (Time.now > time + 10*60) then
+  puts "API token is too old. Go to https://openbadgefactory.com/c/client/my/edit2/apikey to generate a new one."
+else
+  # Generate a Certificate Signing Request (CSR)
+  puts openssl = "openssl req -new -nodes -batch -days 1095 -newkey rsa:2048 -keyout tmp/obf-test.key -subj '#{subject}' > tmp/obf-test.csr"
+  `#{openssl}`
+
+  # Send the CSR together with our API Key as signature back to OBF
+request_json = "{
+  \"signature\": \"#{File.read('tmp/api_key')}\",
+  \"request\": \"#{File.read('tmp/obf-test.csr')}\"
+}"
+  File.write("tmp/request.json", request_json)
+  puts curl = "curl -s -X POST -H \"Content-Type: application/json\" -d @tmp/request.json https://openbadgefactory.com/v1/client/#{id}/sign_request"
+  puts `#{curl}`
+end
