@@ -15,9 +15,9 @@ curl = "curl -s -H \"Cookie: #{File.read('config/session').gsub!("\n", '')}\", \
 `#{curl}`
 
 # Get OBF Public Key
+`wget -qO tmp/obf_public_key https://openbadgefactory.com/v1/client/OBF.rsa.pub`
 
 # Decrypt our API Key with their public key
-`wget -qO tmp/obf_public_key https://openbadgefactory.com/v1/client/OBF.rsa.pub`
 decryptedAPIKey = JSON.parse(`./decrypt-api-key`)
 puts decryptedAPIKey
 subject = decryptedAPIKey["subject"]
