@@ -4,7 +4,7 @@ use Crypt::OpenSSL::RSA;
 use MIME::Base64;
 use File::Slurp;
 
-my $apikey = read_file('tmp/api_key');
+my $apikey = read_file('config/api_key');
 my $pubkey = read_file('tmp/obf_public_key');
 
 my $key = Crypt::OpenSSL::RSA->new_public_key($pubkey);
