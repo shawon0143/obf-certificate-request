@@ -11,7 +11,7 @@ end
 
 id = File.read("config/id").strip
 
-response = `curl -s --key tmp/obf-test.key --cert #{certificate} https://openbadgefactory.com/v1/ping/#{id}`.strip
+response = `curl -s --key obf.key --cert #{certificate} https://openbadgefactory.com/v1/ping/#{id}`.strip
 
 if response == id then
   puts "Ping successful"

@@ -22,13 +22,13 @@ if (Time.now > time + 10*60) then
 end
 
 # Generate a Certificate Signing Request (CSR)
-openssl = "openssl req -new -nodes -batch -days 1095 -newkey rsa:2048 -keyout tmp/obf-test.key -subj '#{subject}' > tmp/obf-test.csr 2>/dev/null"
+openssl = "openssl req -new -nodes -batch -days 1095 -newkey rsa:2048 -keyout obf.key -subj '#{subject}' > tmp/obf.csr 2>/dev/null"
 `#{openssl}`
 
 # Send the CSR together with our API Key as signature back to OBF
 request_json = "{
   \"signature\": \"#{File.read('config/api_key')}\",
-  \"request\": \"#{File.read('tmp/obf-test.csr').gsub!("\n", '\\n')}\"
+  \"request\": \"#{File.read('tmp/obf.csr').gsub!("\n", '\\n')}\"
 }"
 File.write("tmp/request.json", request_json)
 curl = "curl -s -X POST -H \"Content-Type: application/json\" -d @tmp/request.json https://openbadgefactory.com/v1/client/#{id}/sign_request"
