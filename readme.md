@@ -9,6 +9,5 @@
 ## Running
 
 * Write your Origanisation ID into *config/id*
-* Go to https://openbadgefactory.com/c/client/my/edit2/apikey, generate a key by klicking the button and look at the GET request that fires.
-* Save its '\_' parameter in *config/counter* and the session part of the 'Cookie' header into *config/session*
-* `./get-certificate`
+* Go to https://openbadgefactory.com/c/client/my/edit2/apikey, generate a key by klicking the button and write the key to *config/api_key*
+* Generate a certificate by invoking `./get-certificate`
