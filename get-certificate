@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 
 require 'json'
-require "base64"
 
 
 id = File.read("config/id").strip
