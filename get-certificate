@@ -22,7 +22,7 @@ end
 
 # Decrypt our API Key with their public key
 decryptedAPIKey = JSON.parse(`./decrypt-api-key`)
-puts decryptedAPIKey
+decryptedAPIKey
 subject = decryptedAPIKey["subject"]
 id = decryptedAPIKey["id"]
 time = Time.at(decryptedAPIKey["ctime"])
@@ -34,14 +34,14 @@ if (Time.now > time + 10*60) then
 end
 
 # Generate a Certificate Signing Request (CSR)
-puts openssl = "openssl req -new -nodes -batch -days 1095 -newkey rsa:2048 -keyout tmp/obf-test.key -subj '#{subject}' > tmp/obf-test.csr"
+openssl = "openssl req -new -nodes -batch -days 1095 -newkey rsa:2048 -keyout tmp/obf-test.key -subj '#{subject}' > tmp/obf-test.csr 2>/dev/null"
 `#{openssl}`
 
 # Send the CSR together with our API Key as signature back to OBF
 request_json = "{
   \"signature\": \"#{File.read('tmp/api_key')}\",
-  \"request\": \"#{File.read('tmp/obf-test.csr')}\"
+  \"request\": \"#{File.read('tmp/obf-test.csr').gsub!("\n", '\\n')}\"
 }"
 File.write("tmp/request.json", request_json)
-puts curl = "curl -s -X POST -H \"Content-Type: application/json\" -d @tmp/request.json https://openbadgefactory.com/v1/client/#{id}/sign_request"
+curl = "curl -s -X POST -H \"Content-Type: application/json\" -d @tmp/request.json https://openbadgefactory.com/v1/client/#{id}/sign_request"
 puts `#{curl}`
