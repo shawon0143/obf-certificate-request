@@ -27,7 +27,7 @@ subject = decryptedAPIKey["subject"]
 id = decryptedAPIKey["id"]
 time = Time.at(decryptedAPIKey["ctime"])
 
-# Test if our API Key is too older (older than 10 miutes)
+# Test if our API Key is too old (older than 10 miutes)
 # This should not happen when atomatically retrieving our API key with the hack above
 if (Time.now > time + 10*60) then
   abort "API token is too old. Go to https://openbadgefactory.com/c/client/my/edit2/apikey to generate a new one."
