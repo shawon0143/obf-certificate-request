@@ -1,0 +1,20 @@
+#!/usr/bin/ruby
+
+if ARGV.length == 1 then
+  certificate = ARGV[0]
+  if !File.exists?(certificate) then
+    abort "Certificate file not found"
+  end
+else
+  certificate = "certificate"
+end
+
+id = File.read("config/id").strip
+
+response = `curl -s --key tmp/obf-test.key --cert #{certificate} https://openbadgefactory.com/v1/ping/#{id}`.strip
+
+if response == id then
+  puts "Ping successful"
+else
+  puts "Ping failed"
+end
