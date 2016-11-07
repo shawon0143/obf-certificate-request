@@ -10,8 +10,8 @@ A simple ruby script to generate a Certificate for the [Open Badge Factory REST 
 
 ## Useage
 
-* Write your Origanisation ID into *config/id*
-* Go to https://openbadgefactory.com/c/client/my/edit2/apikey, generate a key by klicking the button and write the key to *config/api_key*
+* Write your Origanisation ID into a file *config/id*
+* Go to https://openbadgefactory.com/c/client/my/edit2/apikey, generate a key by klicking the button and write the key to a file *config/api_key*
 * Generate a certificate by invoking `./get-certificate`
 
 Your private key will be written to *obf.key* and your certificate will be written to STDOUT so you can pipe it anywhere you want.
