@@ -3,7 +3,6 @@
 require 'json'
 
 
-id = File.read("config/id").strip
 
 # Get OBF Public Key
 `wget -qO tmp/obf_public_key https://openbadgefactory.com/v1/client/OBF.rsa.pub`
@@ -12,7 +11,8 @@ id = File.read("config/id").strip
 decryptedAPIKey = JSON.parse(`./decrypt-api-key`)
 decryptedAPIKey
 subject = decryptedAPIKey["subject"]
-id = decryptedAPIKey["id"]
+id = decryptedAPIKey["id"].strip
+File.write("config/id", id)
 time = Time.at(decryptedAPIKey["ctime"])
 
 # Test if our API Key is too old (older than 10 miutes)
